@@ -1,4 +1,49 @@
 #!/usr/bin/make -f
+#export DH_VERBOSE=1
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
+
+CFLAGS:=$(shell dpkg-buildflags --get CFLAGS)
+LDFLAGS:=$(shell dpkg-buildflags --get LDFLAGS)
+CFLAGS += -Wall -g -fPIC -DTESSDATA_PREFIX='\"/usr/share/tesseract-ocr/5\"'
+
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+endif
+
+ifeq (,$(NUMJOBS))
+	NUMJOBS = 1
+endif
 
 %:
-	dh $@
+	dh $@ --with autoreconf
+
+override_dh_auto_build:
+	make -j$(NUMJOBS)
+	make -j$(NUMJOBS) training
+
+override_dh_auto_install:
+	$(MAKE) DESTDIR=$$(pwd)/debian/tmp prefix=/usr install
+	$(MAKE) DESTDIR=$$(pwd)/debian/tmp prefix=/usr training-install
+
+override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	./tesseract -v
+	./tesseract ./test/testing/phototest.tif -
+endif
+
+override_dh_auto_clean:
+	dh_auto_clean
+	dh_clean java/com/Makefile java/com/google/Makefile java/com/google/scrollview/Makefile java/com/google/scrollview/events/Makefile java/com/google/scrollview/ui/Makefile
+	test ! -f configure.ac.orig || mv configure.ac.orig configure.ac
+
+override_dh_auto_configure:
+ifeq ($(DEB_BUILD_GNU_TYPE),arm-linux-gnueabi)
+	cp configure.ac configure.ac.orig
+	patch -p1 < debian/patches/disable_NEON.diff
+else
+	echo "no patch"
+endif
+	./autogen.sh
+	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --disable-tessdata-prefix --prefix=/usr --libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH) --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CXXFLAGS="$(CFLAGS)" LDFLAGS="-llept -Wl,-z,defs $(LDFLAGS)"
