@@ -2,18 +2,18 @@ Source: tesseract
 Section: graphics
 Priority: optional
 Maintainer: Alexander Pozdnyakov <almipo@mail.ru>
-Build-Depends: debhelper-compat (= 12), libleptonica-dev (>= 1.75.3),
+Build-Depends: debhelper-compat (= 13), libleptonica-dev (>= 1.75.3),
                automake, libtool, libarchive-dev, libpango1.0-dev, libcairo2-dev, libicu-dev,
-               libpng-dev, libjpeg-dev, libtiff-dev, zlib1g-dev, git, asciidoc,
-               xsltproc, docbook-xsl, docbook-xml, tesseract-ocr-eng (>= 5.0.0~), dh-autoreconf, autoconf-archive, libcurl4-openssl-dev
-Standards-Version: 4.5.1
+               libpng-dev, zlib1g-dev, asciidoc,
+               xsltproc, docbook-xsl, docbook-xml, tesseract-ocr-eng (>= 5.0.0~), autoconf-archive, libcurl4-openssl-dev
+Standards-Version: 4.7.0
 Homepage: https://github.com/tesseract-ocr/
 Rules-Requires-Root: no
 
 Package: tesseract-ocr
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
- tesseract-ocr-eng (>= 4.0.9~), tesseract-ocr-osd (>= 4.0.9~), libtesseract5 (= ${binary:Version}), liblept5 (>= 1.75.3)
+ tesseract-ocr-eng (>= 4.0.9~), tesseract-ocr-osd (>= 4.0.9~), libtesseract5 (= ${binary:Version}), libleptonica6 (>= 1.75.3)
 Replaces: tesseract-ocr-data
 Description: Tesseract command line OCR tool
  Tesseract is an open source Optical Character Recognition (OCR)
@@ -25,7 +25,7 @@ Package: libtesseract-dev
 Section: libdevel
 Architecture: any
 Multi-Arch: same
-Depends: libtesseract5 (= ${binary:Version}), ${misc:Depends}, libleptonica-dev, libarchive-dev, libcurl4-dev | libcurl4-gnutls-dev
+Depends: libtesseract5 (= ${binary:Version}), ${misc:Depends}, libleptonica-dev, libarchive-dev, libcurl4-openssl-dev | libcurl4-gnutls-dev
 Replaces: tesseract-ocr-dev (<< 3.0.1-1~)
 Breaks: tesseract-ocr-dev (<< 3.0.1-1~)
 Description: Development files for the tesseract command line OCR tool
@@ -41,7 +41,7 @@ Multi-Arch: same
 Breaks: tesseract-ocr (<< 3.01~), ocropus (<< 0.4.0~)
 Replaces: tesseract-ocr (<< 3.01~)
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, liblept5 (>= 1.75.3)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libleptonica6 (>= 1.75.3)
 Description: Tesseract OCR library
  Tesseract is an open source Optical Character Recognition (OCR)
  Engine. It can be used directly, or (for programmers) using an API to

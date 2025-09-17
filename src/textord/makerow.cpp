@@ -1336,7 +1336,7 @@ void Textord::compute_block_xheight(TO_BLOCK *block, float gradient) {
     // Try to search for two modes in row_cap_heights that could
     // be the xheight and the capheight (e.g. some of the rows
     // were lowercase, but did not have enough (a/de)scenders.
-    // If such two modes can not be found, this block is most
+    // If such two modes cannot be found, this block is most
     // likely all caps (or all small caps, in which case the code
     // still works as intended).
     compute_xheight_from_modes(
@@ -2485,8 +2485,8 @@ OVERLAP_STATE most_overlapping_row( // find best row
       row_it->forward();
       test_row = row_it->data();
       if (test_row->min_y() <= top && test_row->max_y() >= bottom) {
-        merge_top = test_row->max_y() > row->max_y() ? test_row->max_y() : row->max_y();
-        merge_bottom = test_row->min_y() < row->min_y() ? test_row->min_y() : row->min_y();
+        merge_top = std::max(test_row->max_y(),row->max_y());
+        merge_bottom = std::min(test_row->min_y(),row->min_y());
         if (merge_top - merge_bottom <= rowsize) {
           if (testing_blob && textord_debug_blob) {
             tprintf("Merging rows at (%g,%g), (%g,%g)\n", row->min_y(), row->max_y(),
