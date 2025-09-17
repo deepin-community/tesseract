@@ -20,6 +20,7 @@
 
 #include <tesseract/resultiterator.h>
 
+#include "helpers.h"  // for copy_string
 #include "pageres.h"
 #include "tesseractclass.h"
 #include "unicharset.h"
@@ -149,7 +150,7 @@ void ResultIterator::CalculateBlobOrder(std::vector<int> *blob_indices) const {
   for (int i = 0; i < word_length_; i++) {
     letter_types.push_back(it_->word()->SymbolDirection(i));
   }
-  // Convert a single separtor sandwiched between two EN's into an EN.
+  // Convert a single separator sandwiched between two ENs into an EN.
   for (int i = 0; i + 2 < word_length_; i++) {
     if (letter_types[i] == U_EURO_NUM && letter_types[i + 2] == U_EURO_NUM &&
         (letter_types[i + 1] == U_EURO_NUM_SEP || letter_types[i + 1] == U_COMMON_NUM_SEP)) {
@@ -681,10 +682,7 @@ char *ResultIterator::GetUTF8Text(PageIteratorLevel level) const {
       }
     } break;
   }
-  int length = text.length() + 1;
-  char *result = new char[length];
-  strncpy(result, text.c_str(), length);
-  return result;
+  return copy_string(text);
 }
 std::vector<std::vector<std::vector<std::pair<const char *, float>>>>
     *ResultIterator::GetRawLSTMTimesteps() const {
