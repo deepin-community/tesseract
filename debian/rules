@@ -53,4 +53,8 @@ else
 	echo "no patch"
 endif
 	./autogen.sh
+ifeq ($(DEB_HOST_ARCH),sw64)
+	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --disable-tessdata-prefix --prefix=/usr --disable-openmp -libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH) --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CXXFLAGS="$(CFLAGS)" LDFLAGS="-lleptonica -Wl,-z,defs $(LDFLAGS)"
+else
 	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --disable-tessdata-prefix --prefix=/usr --libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH) --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CXXFLAGS="$(CFLAGS)" LDFLAGS="-lleptonica -Wl,-z,defs $(LDFLAGS)"
+endif

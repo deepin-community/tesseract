@@ -1,3 +1,9 @@
+tesseract (5.5.0-1deepin1) unstable; urgency=medium
+
+  * feat: add sw64 support
+
+ -- hudeng <hudeng@deepin.org>  Thu, 18 Sep 2025 10:28:51 +0800
+
 tesseract (5.5.0-1) unstable; urgency=medium
 
   * New upstream release
